@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Lora, Manrope } from "next/font/google";
-import { Suspense } from "react";
 
 import { VisitTracker } from "@/components/analytics/VisitTracker";
 import { YandexMetrika } from "@/components/analytics/YandexMetrika";
@@ -72,9 +71,7 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${sans.variable} ${display.variable}`}>
       <body className="relative font-sans selection:bg-blush-500/30 selection:text-blush-200">
-        <Suspense fallback={null}>
-          <YandexMetrika />
-        </Suspense>
+        <YandexMetrika />
         <VisitTracker />
         <LanguageProvider>
           <AuroraBackground />
