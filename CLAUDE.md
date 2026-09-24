@@ -44,6 +44,11 @@ There is no test runner or test suite. The pure modules in `lib/` (`flow.ts`, `r
 - The route never trusts the client. It re-validates the body with `parseContactPayload` (`lib/contact.ts`) and builds an HTML message with `formatInviteMessage` (`lib/telegram.ts`), which always uses Uzbek labels and escapes user text. It then calls the Telegram `sendMessage` API with a 10s timeout.
 - Error codes: `invalid_payload` (400), `not_configured` (500) and `telegram_failed` (502).
 - Server-only env vars: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`. See `.env.local.example`. On Vercel they must be added under Project Settings → Environment Variables. Never expose them via `NEXT_PUBLIC_`.
+- Public env var: `NEXT_PUBLIC_YANDEX_METRIKA_ID` for Yandex Metrika counter.
+
+**Analytics & Visit Tracking.**
+- `components/analytics/YandexMetrika.tsx`: Inserts the official Yandex Metrika counter with Webvisor enabled, allowing full session replay of mouse movements. Uses `lib/analytics.ts` (`reachGoal`) to track `answer_yes`, `flee_no`, and `invite_sent`.
+- `components/analytics/VisitTracker.tsx` & `app/api/track-visit/route.ts`: Tracks persistent visit count per visitor in `localStorage` and alerts the Telegram bot with device type, OS, browser, screen resolution and visit number on each session.
 
 **Metadata and deploy.** `lib/site.ts` is the source of truth for the site name, title, description, OG size and brand colours. Brand colours are duplicated in `tailwind.config.ts`, so keep the two in sync. `SITE.url` resolves in this order:
 

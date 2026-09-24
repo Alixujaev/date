@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Lora, Manrope } from "next/font/google";
 
+import { VisitTracker } from "@/components/analytics/VisitTracker";
+import { YandexMetrika } from "@/components/analytics/YandexMetrika";
 import { AuroraBackground } from "@/components/AuroraBackground";
 import { DesktopOnlyNotice } from "@/components/DesktopOnlyNotice";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
@@ -69,6 +71,8 @@ export default function RootLayout({
   return (
     <html lang="ru" className={`${sans.variable} ${display.variable}`}>
       <body className="relative font-sans selection:bg-blush-500/30 selection:text-blush-200">
+        <YandexMetrika />
+        <VisitTracker />
         <LanguageProvider>
           <AuroraBackground />
           {/* Sayt faqat desktop uchun: < 1024px da faqat ogohlantirish ko'rinadi */}

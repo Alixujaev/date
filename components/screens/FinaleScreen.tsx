@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ScreenShell } from "@/components/ScreenShell";
 import { Button } from "@/components/ui/Button";
 import { ContactForm, type ContactValues } from "@/components/ui/ContactForm";
+import { reachGoal } from "@/lib/analytics";
 import type { ScreenProps } from "@/lib/flow";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { itemVariants, quickFade, screenVariants } from "@/lib/motion";
@@ -42,6 +43,7 @@ export function FinaleScreen({ state, dispatch }: ScreenProps) {
           name: values.name,
           message: values.message,
         });
+        reachGoal("invite_sent", { name: values.name });
         if (mountedRef.current) setPhase("sent");
       } catch {
         if (!mountedRef.current) return;

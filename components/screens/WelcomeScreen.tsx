@@ -6,6 +6,7 @@ import { useCallback, useRef } from "react";
 import { ScreenShell } from "@/components/ScreenShell";
 import { Button } from "@/components/ui/Button";
 import { RunawayButton } from "@/components/ui/RunawayButton";
+import { reachGoal } from "@/lib/analytics";
 import type { ScreenProps } from "@/lib/flow";
 import { useTranslation } from "@/lib/i18n/useTranslation";
 import { itemVariants } from "@/lib/motion";
@@ -18,14 +19,16 @@ export function WelcomeScreen({ state, dispatch }: ScreenProps) {
   const yesRef = useRef<HTMLButtonElement>(null);
 
   const handleYes = () => {
+    reachGoal("answer_yes");
     dispatch({ type: "ANSWER", answer: "yes" });
     // "Ha" bosilganda to'g'ridan-to'g'ri forma ekraniga o'tamiz
     dispatch({ type: "GOTO", step: "finale" });
   };
 
   const handleFlee = useCallback(() => {
+    reachGoal("flee_no", { attempts: state.noAttempts + 1 });
     dispatch({ type: "NO_ATTEMPT" });
-  }, [dispatch]);
+  }, [dispatch, state.noAttempts]);
 
   return (
     <ScreenShell direction={state.direction}>
