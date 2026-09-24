@@ -1,42 +1,49 @@
 "use client";
 
 import Script from "next/script";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
+const COUNTER_ID = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID || 113002335;
 
 export function YandexMetrika() {
-  const metrikaId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID?.trim() || "113002335";
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!COUNTER_ID || typeof window.ym !== "function") return;
+
+    const query = searchParams?.toString();
+    window.ym(Number(COUNTER_ID), "hit", pathname + (query ? `?${query}` : ""));
+  }, [pathname, searchParams]);
+
+  if (!COUNTER_ID) return null;
 
   return (
     <>
-      <Script
-        id="yandex-metrika"
-        strategy="afterInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            (function(m,e,t,r,i,k,a){
-                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                m[i].l=1*new Date();
-                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-            })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=${metrikaId}', 'ym');
+      <Script id="yandex-metrika" strategy="afterInteractive">
+        {`
+          (function(m,e,t,r,i,k,a){
+              m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+              m[i].l=1*new Date();
+              for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+              k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a);
+          })(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-            ym(${metrikaId}, 'init', {
-              ssr: true,
+          ym(${COUNTER_ID}, "init", {
+              defer: true,
               webvisor: true,
               clickmap: true,
-              ecommerce: "dataLayer",
-              referrer: document.referrer,
-              url: location.href,
               accurateTrackBounce: true,
               trackLinks: true
-            });
-          `,
-        }}
-      />
+          });
+        `}
+      </Script>
       <noscript>
         <div>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={`https://mc.yandex.ru/watch/${metrikaId}`}
+            src={`https://mc.yandex.ru/watch/${COUNTER_ID}`}
             style={{ position: "absolute", left: "-9999px" }}
             alt=""
           />
@@ -45,3 +52,5 @@ export function YandexMetrika() {
     </>
   );
 }
+
+export default YandexMetrika;
